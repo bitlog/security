@@ -15,26 +15,49 @@ function genpasswd() {
 # show help text in case of missing arguments
 echo
 if [[ -z "${@}" ]]; then
-  echo -e "$(basename ${0}) is a script to generate reproducible secure passwords\n" >&2
-  echo -e "\nRequired:\n" >&2
-  echo -e " File path to create a password per line\n" >&2
-  echo -e "OR\n" >&2
-  echo -e " A string from which to create a password\n" >&2
-  echo -e "\nExamples:\n" >&2
-  echo -e " $(basename ${0}) \$HOME/passwords # <-- file\n" >&2
-  echo -e " $(basename ${0}) \"gmail.com testuser\" # <-- string\n" >&2
-  echo -e " $(basename ${0}) \$HOME/passwords \"gmail.com testuser\" amazon.com # <-- combination of file and multiple strings\n" >&2
+  echo -e "$(basename ${0}) is a script to generate reproducible secure passwords\n" 1>&2
+  echo -e "\nRequired:\n" 1>&2
+  echo -e " File path to create a password per line\n" 1>&2
+  echo -e "OR\n" 1>&2
+  echo -e " A string from which to create a password\n" 1>&2
+  echo -e "\nExamples:\n" 1>&2
+  echo -e " $(basename ${0}) \${HOME}/passwords # <-- file\n" 1>&2
+  echo -e " $(basename ${0}) \"gmail.com testuser\" # <-- string\n" 1>&2
+  echo -e " $(basename ${0}) \${HOME}/passwords \"gmail.com testuser\" amazon.com # <-- combination of file and multiple strings\n" 1>&2
 
   exit 1
 fi
 
 
 # get master password
-read -s -p "Enter Master password: " MASTERPW ; echo -e "\n"
+unset MASTERPW
+MASTERPW=""
+echo -n 'Enter Master password: ' 1>&2
+while IFS= read -r -n1 -s char; do
+  case "$( echo -n "${char}" | od -An -tx1 )" in
+    '') # EOL
+      break
+      ;;
+    ' 08'|' 7f') # backspace or delete
+      if [[ -n "${MASTERPW}" ]]; then
+        MASTERPW="$( echo "${MASTERPW}" | sed 's/.$//' )"
+        echo -n $'\b \b' 1>&2
+      fi
+      ;;
+    ' 15') # ^U or kill line
+      echo -n "${MASTERPW}" | sed 's/./\cH \cH/g' 1>&2
+      MASTERPW=''
+      ;;
+    *)  MASTERPW="${MASTERPW}${char}"
+      echo -n '*' 1>&2
+      ;;
+  esac
+done
+echo -e "\n"
 
 # check that master password is not empty
 if [[ -z "${MASTERPW}" ]]; then
-  echo -e "Master password must not be empty!\n"
+  echo -e "\nMaster password must not be empty!\n"
   exit 1
 fi
 
