@@ -48,7 +48,7 @@ while IFS= read -r -n1 -s char; do
       echo -n "${MASTERPW}" | sed 's/./\cH \cH/g' 1>&2
       MASTERPW=''
       ;;
-    *)  MASTERPW="${MASTERPW}${char}"
+    *)  MASTERPW+="${char}"
       echo -n '*' 1>&2
       ;;
   esac
@@ -70,7 +70,7 @@ for i in "${@}"; do
     while read line; do
       # keep empty lines in mind
       if [[ -z "${line}" ]]; then
-        PWS="${PWS}"$'\n'
+        PWS+='\n'
 
       else
         PWS="$(echo -e "${PWS}\n${line}: $(echo ${MASTERPW}\@${line} | genpasswd)")"
@@ -83,7 +83,7 @@ for i in "${@}"; do
   fi
 
   # add new line for nicer formatting
-  PWS="${PWS}"$'\n'
+  PWS+='\n'
 done
 
 
