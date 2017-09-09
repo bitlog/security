@@ -66,7 +66,7 @@ fi
 for i in "${@}"; do
 
   # if argument points to a file, read lines from file
-  if [[ -f "${i}" ]]; then
+  if [[ -f "${i}" || -L "${i}" ]]; then
     while read line; do
       # keep empty lines in mind
       if [[ -z "${line}" ]]; then
