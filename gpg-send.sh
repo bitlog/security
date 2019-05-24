@@ -14,7 +14,7 @@ fi
 # check gpg values
 
 DEFAULTKEY="0x$(grep "^default-key " ${GPGCONF} | awk '{print $2}')"
-KEYSERVERS="$(grep "^keyserver " ${GPGCONF} | awk '{print $2}')"
+KEYSERVERS="$(grep "^keyserver " ${GPGCONF} | awk '{print $2}' | sort -u)"
 
 if [[ -z "${DEFAULTKEY}" ]] || [[ -z "${KEYSERVERS}" ]]; then
   echo -e "\nNo 'default-key' or 'keyserver' defined in ${GPGCONF}\n"
