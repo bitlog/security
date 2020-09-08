@@ -2,8 +2,11 @@
 
 A collection of simple bash scripts intended for daily usage
 
-1. [check-gpg.sh](check-gpg.sh) *Check PGP keys for upcoming expiration*
+1. [check-gpg.sh](check-gpg.sh) *Check private PGP keys for upcoming expiration*
    * Checks private PGP keys for upcoming expiration
+   * Generate output for when run from terminal as well as for when run from scripts such as Tmux
+1. [check-gpg-pub.sh](check-gpg-pub.sh) *Check public PGP keys for upcoming expiration*
+   * Checks public PGP keys for upcoming expiration
    * Generate output for when run from terminal as well as for when run from scripts such as Tmux
 1. [genpasswd.sh](genpasswd.sh) *Password manager to create reproducible passwords*
    * Master password creates same password every time
